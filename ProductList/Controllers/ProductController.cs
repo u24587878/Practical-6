@@ -10,12 +10,24 @@ namespace ProductList.Controllers
         public ActionResult Index()
             {
             var viewModel = new ProductViewModel
-                {
+            {
+                Suppliers = ProductRepository.GetSuppliers(),
                 Categories = ProductRepository.GetCategories(),
                 Products = ProductRepository.GetProducts(),
-                };
+            };
             return View(viewModel);
             }
+
+        //new actionresult
+        public ActionResult GetCategoriesBySupplier(int supplierId)
+        {
+            var categories = ProductRepository.GetCategories()
+                .Where(c => c.SupplierId == supplierId)
+                .Select(c => new { Id = c.Id, Name = c.Name })
+                .ToList();
+
+            return Json(categories, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult GetProductsByCategory(int categoryId)
             {
